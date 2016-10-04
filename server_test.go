@@ -92,7 +92,7 @@ func TestDevAppServer(t *testing.T) {
 		t.Fatalf("Got %v, expected nil", err)
 	}
 
-	sv, err := New(appDir, &Options{Port: 8080, AdminPort: 8000, Debug: true})
+	sv, err := New(appDir, &Options{Port: 8080, AdminPort: 8000, Debug: true, Timeout: 60})
 	if err != nil {
 		t.Fatalf("New returned %v, expected nil", err)
 	}

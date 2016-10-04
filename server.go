@@ -83,12 +83,16 @@ func getURLs(reader io.Reader, timeout time.Duration) (string, string, string, e
 		errc               = make(chan error, 1)
 	)
 
+	scanned := func() bool {
+		return (api != "" && module != "" && admin != "")
+	}
+
 	go func() { // scan stderr for patterns
 		s := bufio.NewScanner(reader)
-		for s.Scan() {
-			if admin != "" && api != "" && module != "" {
-				break
-			}
+		// The test scanned must be performed before Scan is called, or else the scanner could block
+		// waiting for the next line. This reads much better than an if block at the end of the for
+		// loop.
+		for !scanned() && s.Scan() {
 			if match := apiServerAddrRE.FindStringSubmatch(s.Text()); match != nil {
 				api = match[1]
 			}
